@@ -1,4 +1,7 @@
 
 # Builds the program
-javac -d Linker/bin/ Linker/src/linker/*.java
-java /Linker/bin/linker/OSLinker.class < testing/input-1
+javac -d bin/ src/linker/*.java
+
+# Runs the program against a testfile
+echo 'Outputting file to Linker.output'
+java -cp bin linker.OSLinker < testing/input-1
