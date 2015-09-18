@@ -1,5 +1,6 @@
 
 # Builds the program
+mkdir bin
 javac -d bin/ src/linker/*.java
 
 # Runs the program against a testfile
