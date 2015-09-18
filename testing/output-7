@@ -1,0 +1,12 @@
+Symbol Table
+X21=3
+X31=4
+
+Memory Map
+0:  1003
+1:  1003
+2:  1003
+3:  2299 Error: Absolute address exceeds machine size; largest address used.
+4:  3004 Error: Relative address exceeds module size; largest module address used.
+
+Warning: X31 was defined in module 2 but never used.

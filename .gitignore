@@ -1,0 +1,16 @@
+# OSX Ignores
+.DS_Store
+
+# IDE Ignores
+.idea/
+.metadata/
+*.classpath
+*.project
+.recommenders/
+workspace/
+
+# Java ignores
+*.class
+
+# C ignores
+*.out
