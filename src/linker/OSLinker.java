@@ -7,6 +7,7 @@ package linker;
  * Imports
  */
 import java.util.Hashtable;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -242,14 +243,14 @@ public class OSLinker
 					// NOTE: THE FOLLOW CODE WORKS BECAUSE MATHS. ANY ATTEMPT TO RATIONALISE THIS CODE WILL MAKE YOUR HEAD EXPLODE.
 					// YOU'VE BEEN WARNED
 					int programTextOriginalLine = currentNode.getLine();
-					
+
 					int deleteCount = 0;
 					while (programTextOriginalLine > -1)
 					{
 						programTextOriginalLine -= 3;
 						++deleteCount;
 					}
-					
+
 					int textOffset = 0;
 					for (int arrayIterator = 0; arrayIterator < deleteCount; ++arrayIterator)
 					{textOffset += lineOffsets.get(arrayIterator);}
@@ -325,6 +326,18 @@ public class OSLinker
 		/* SECTION 3: FILE OUTPUT */
 		PrintWriter writer = null;
 		try {
+			// Checks for bin directory existance
+			File binDirectory = new File("bin");
+			if (binDirectory.exists())
+			{
+				if (binDirectory.isDirectory())
+				{
+					// Does nothing
+				}
+			}
+			else
+			{binDirectory.mkdir();}
+
 			writer = new PrintWriter("Linker.output", "UTF-8");
 			// Outputs to file the symbol definitions
 			Enumeration<String> symbols = symbolTable.keys();
