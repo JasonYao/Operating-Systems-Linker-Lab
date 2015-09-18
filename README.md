@@ -5,36 +5,47 @@ By Jason Yao, CSCI-UA 202 Operating Systems, Instructor: Allen Gottlieb, Lab 1,
 ## Description
 
 The purposes of this lab is to implement a one- or two-pass linker, in C, C++, or Java.
-In order to familiarise myself with C more, C was chosen as the language to build this linker.
+
+C was originally chosen, but more time was spent developing the underlying structures than to
+developing the linker code - things such as hashtables or linked lists all while dealing with
+pointer allocation.
+
+Thus, the decision to switch back to Java (A breath of fresh air after toiling in the bowels of
+computer science known as C programming)
 
 A linker is the second step after the source code is compiled into an object module.
-This linker will take in that object module, and output an executable for the system,
+This linker will take in that object module, and resolve all references to libraries and module loading,
 by linking together the references to external libraries, along with rearranging each
 individual module address to the correct absolute value.
 
 This linker will follows the guidelines outlined in the [project description](lab1.pdf),
 and is thus considered a linker specific for this class's usage only.
 
+**THIS IS MEANT TO BE NOR WILL IT EVER BE A LINKER TO BE USED ON ACTUAL OBJECT MODULES **
+
+This is simply a proof of concept of how a linker is built, what it does, and why it is important.
+
 ## Compilation & Running
 
-### Making sure gcc is on your system
+### Making sure java is on your system
 
-In order to compile this program, you'll need to make sure that `gcc` is installed.
-type `gcc -v`, and if the output dislays some configuration options, you're good to go.
+In order to compile this program, you'll need to make sure that `java` is installed.
+type `java -version`, and if the output dislays java runtime version, you're good to go.
 
-If gcc is NOT installed, you can do so in unix environments with your package manager of choice.
-Normally the following commands will get you gcc:
+If `java` is NOT installed, you can do so in unix environments with your package manager of choice.
+Normally the following commands will get you `java`:
 
 ```
 apt-get update
 apt-get install build-essentials
+apt-get install default-jdk
 ```
 
 ### Compiling
-`gcc linker.c -o linker.out`
+`javac -d bin/ src/linker/*.java` # Builds the program
 
 ### Running
-`./linker.out testInput_1 testInput_2 ... testInput_n` # This is assuming that you have the object modules as files.
+`java -cp bin linker.OSLinker < testing/input-1` # Runs the program against a testfile sent in via standard input
 
 ## Licensing
 This repo is under the auspice of the license file, located [here](LICENSE.md)
