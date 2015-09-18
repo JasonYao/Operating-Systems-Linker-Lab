@@ -42,6 +42,7 @@ apt-get install default-jdk
 ```
 
 ### Compiling
+`mkdir bin` # Creates the output folder to hold compiled programs
 `javac -d bin/ src/linker/*.java` # Builds the program
 
 ### Running
