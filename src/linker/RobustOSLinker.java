@@ -411,7 +411,7 @@ public class RobustOSLinker
 						if (symbolTable.containsKey(currentSymbolName))
 						{
 							// Symbol was found, updates symbol instead of making new one
-							symbolTable.replace(currentSymbolName, newSymbol);
+							symbolTable.get(currentSymbolName).setDefinition(currentSymbolDefinition);
 							errors.add("The variable " + currentSymbolName + 
 									" is multiply defined; last value of " + currentSymbolDefinition + " will be used");
 						}
