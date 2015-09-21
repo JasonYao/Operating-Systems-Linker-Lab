@@ -21,16 +21,16 @@ individual module address to the correct absolute value.
 This linker will follows the guidelines outlined in the [project description](lab1.pdf),
 and is thus considered a linker specific for this class's usage only.
 
-**THIS IS MEANT TO BE NOR WILL IT EVER BE A LINKER TO BE USED ON ACTUAL OBJECT MODULES **
+**THIS IS NOT MEANT TO BE NOR WILL IT EVER BE A LINKER TO BE USED ON ACTUAL OBJECT MODULES **
 
-This is simply a proof of concept of how a linker is built, what it does, and why it is important.
+This is simply a proof of concept of how a linker is built, what it does, and why it is important in operating system usages.
 
 ## Compilation & Running
 
 ### Making sure java is on your system
 
 In order to compile this program, you'll need to make sure that `java` is installed.
-type `java -version`, and if the output dislays java runtime version, you're good to go.
+type `java -version`, and if the output dislays a java runtime version, you're good to go.
 
 If `java` is NOT installed, you can do so in unix environments with your package manager of choice.
 Normally the following commands will get you `java`:
@@ -46,6 +46,10 @@ apt-get install default-jdk
 `javac -d bin/ src/linker/*.java` # Builds the program
 
 ### Running
+`java -cp bin linker.OSLinker < INSERT_TEST_FILE_PATH_HERE` # Runs the program against a testfile sent in via standard input
+
+#### Example:
+
 `java -cp bin linker.OSLinker < testing/input-1` # Runs the program against a testfile sent in via standard input
 
 ## Licensing
