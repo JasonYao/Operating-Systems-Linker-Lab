@@ -25,6 +25,7 @@ public class RobustOSLinker
 	private static ArrayList<String> errors = null;
 	private static ArrayList<Use> useList = null;
 	private static ArrayList<Integer> lineOffsets = null;
+	private static ArrayList<Integer> indicatorList = null;
 	private static int MACHINE_SIZE;
 
 	/**
@@ -42,6 +43,7 @@ public class RobustOSLinker
 			useList = new ArrayList<Use>(); // Creates a list of external symbol uses
 			lineOffsets = new ArrayList<Integer>(); // Creates a list of the line offsets in the program text
 			lineOffsets.add(0); // Adds the base addition
+			indicatorList = new ArrayList<Integer>();
 			MACHINE_SIZE = 300;
 
 			/* START OF SECTION 0: 1ST PASS */
@@ -83,7 +85,7 @@ public class RobustOSLinker
 	} // End of the final error checking method
 
 	/**
-	 * Maps everything without reading from the input a second time, in the form of a single pass linker
+	 * Maps everything without reading from the input a second time
 	 */
 	private static void process()
 	{
@@ -108,7 +110,7 @@ public class RobustOSLinker
 					int overflow = Integer.parseInt(Integer.toString(currentText).substring(0,1) + largestValidAddress);
 					programText.get(programCount).setText(overflow);
 					errors.add("Absolute address exceeds machine size; largest address of " + largestValidAddress 
-							+ " used in line " + programCount);
+							+ " used in module " + programCount);
 				}
 				else
 				{
@@ -129,11 +131,13 @@ public class RobustOSLinker
 				// NOTE: THE FOLLOW CODE WORKS BECAUSE MATHS. ANY ATTEMPT TO RATIONALISE THIS CODE WILL MAKE YOUR HEAD EXPLODE.
 				// YOU'VE BEEN WARNED.
 				ProgramText currentProgram = null;
+				int internalProgramCount = 0;
 				for (int i = 0; i < programText.size(); ++i)
 				{
 					if (programText.get(i).getText() == currentText)
 					{
 						currentProgram = programText.get(i);
+						internalProgramCount = i;
 						break;
 					}
 				}
@@ -155,11 +159,27 @@ public class RobustOSLinker
 				int truncatedOriginal = Integer.parseInt(Integer.toString(currentProgram.getText()).substring(0, 4));
 				int newText = truncatedOriginal + textOffset;
 
-				if (newText > 9999)
+				int indicator = indicatorList.get(currentProgram.getLine());
+				if (operand > indicator)
 				{
-					// relative address exceeds the size of the module [ERROR]
-					System.err.println("ERROR: relative address exceeds the size of the module, using the last module address");
-					newText = Integer.parseInt(Integer.toString(currentProgram.getText()).substring(0, 4));
+					// [ERROR]: Relative address exceeds the size of the module
+					errors.add("Relative address exceeds module size; largest module address used in module " + internalProgramCount);
+					int opCode = Integer.parseInt(Integer.toString(currentProgram.getText()).substring(0, 1));
+					if ((internalProgramCount > 99) && (internalProgramCount < 1000))
+					{
+						// [CASE 3.0]: Internal is 3-digits
+						newText = Integer.parseInt(Integer.toString(opCode) + internalProgramCount);
+					}
+					else if ((internalProgramCount > 9) && (internalProgramCount < 100))
+					{
+						// [CASE 3.1]: Internal is 2-digits
+						newText = Integer.parseInt(Integer.toString(opCode) + "0" + internalProgramCount);
+					}
+					else if ((internalProgramCount >= 0) && (internalProgramCount < 10))
+					{
+						// [CASE 3.2]: Internal is 1-digit
+						newText = Integer.parseInt(Integer.toString(opCode) + "00" + internalProgramCount);
+					}
 				}
 				currentProgram.setText(newText);
 			} // End of the relative address mapping
@@ -187,12 +207,6 @@ public class RobustOSLinker
 					}
 				}
 
-				if (currentUse == null)
-				{
-					System.out.println("fire");
-					System.exit(0);
-				}
-
 				Symbol currentSymbol = symbolTable.get(currentUse.getSymbol());
 				if (currentSymbol == null)
 				{
@@ -216,15 +230,15 @@ public class RobustOSLinker
 					else if ((9 < attachedDefinition) && (attachedDefinition < 100))
 					{
 						// Case 4.2: symbol has a size of 2
-						String opCode = Integer.toString(currentText).substring(0, 2);
-						int newText = Integer.parseInt(opCode + Integer.toString(attachedDefinition));
+						String opCode = Integer.toString(currentText).substring(0, 1);
+						int newText = Integer.parseInt(opCode + "0" + Integer.toString(attachedDefinition));
 						currentProgram.setText(newText);
 					} // End of case 4.2
 					else if ((0 <= attachedDefinition) && (attachedDefinition < 10)) 
 					{
 						// Case 4.3: symbol has a size of 1
-						String opCode = Integer.toString(currentText).substring(0, 3);
-						int newText = Integer.parseInt(opCode + Integer.toString(attachedDefinition));
+						String opCode = Integer.toString(currentText).substring(0, 1);
+						int newText = Integer.parseInt(opCode + "00" +Integer.toString(attachedDefinition));
 						currentProgram.setText(newText);
 					} // End of case 4.3
 				}
@@ -310,7 +324,7 @@ public class RobustOSLinker
 						if (useX < useY)
 						{
 							// [CASE 0.1.0] USE_X IS FIRST, useY's symbol will be used
-							errors.add("Multiple variables used in instruction; all but last ignored in line " + 
+							errors.add("Multiple variables used in instruction; all but last ignored in module " + 
 									useList.get(useX).getLine());
 							useList.remove(useX);
 						}
@@ -324,9 +338,7 @@ public class RobustOSLinker
 					}
 				}
 			}
-		}
-		// TODO Auto-generated method stub
-
+		} // End of case 0: checking for multiple symbols in the same instruction
 	} // End of the error checking method
 
 	/**
@@ -347,6 +359,7 @@ public class RobustOSLinker
 			{
 				currentToken = input.next();
 				int indicator = Integer.parseInt(currentToken);
+				indicatorList.add(indicator);
 
 				// First read will always be guaranteed to be an indicator (scanner will auto advance until so)
 				moduloLineCount = lineCount + 1;
@@ -403,7 +416,7 @@ public class RobustOSLinker
 							// Symbol was found, updates symbol instead of making new one
 							symbolTable.replace(currentSymbolName, newSymbol);
 							errors.add("The variable " + currentSymbolName + 
-									"is multiply defined; last value of " + currentSymbolDefinition + " will be used");
+									" is multiply defined; last value of " + currentSymbolDefinition + " will be used");
 						}
 						else
 						{symbolTable.put(currentSymbolName, newSymbol);}
