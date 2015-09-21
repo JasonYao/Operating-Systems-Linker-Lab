@@ -10,9 +10,9 @@ package linker;
 public class ProgramText 
 {
 	// Globally accessible object attributes
-	private int text;
-	private int line;
-	private int position;
+	private int text;		// The actual program text
+	private int line; 		// The line the progam text was on
+	private int position; 	// The position in the line
 
 	/**
 	 * Program text class constructor

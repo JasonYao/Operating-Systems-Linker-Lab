@@ -10,27 +10,26 @@ package linker;
 public class Use {
 
 	// Globally accessible object attributes
-	private Symbol symbol;
-	private int address;
-	private int line;
-	private int id;
+	private String symbol; // The symbol attached to the use
+	private int address; // The relative address in the useLine
+	private int line; // The current useLine
+
 	
 	/**
 	 * 
 	 */
-	public Use(Symbol symbol, int address, int line, int id)
+	public Use(String symbol, int address, int line)
 	{
 		setSymbol(symbol);
 		setAddress(address);
 		setLine(line);
-		setId(id);
 	}
 
-	public Symbol getSymbol() {
+	public String getSymbol() {
 		return symbol;
 	}
 
-	public void setSymbol(Symbol symbol) {
+	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
 
@@ -49,13 +48,4 @@ public class Use {
 	public void setLine(int line) {
 		this.line = line;
 	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 } // End of the Use  class

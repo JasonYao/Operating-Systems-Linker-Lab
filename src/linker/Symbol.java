@@ -13,6 +13,7 @@ public class Symbol
 	// Globally accessible object attributes
 	private String name;
 	private int definition;
+	private boolean isUsed;
 
 	/**
 	 * 
@@ -21,7 +22,16 @@ public class Symbol
 	{
 		setName(name);
 		setDefinition(definition);
+		setUsed(false);
 	} // End of the constructor
+
+	public boolean isUsed() {
+		return isUsed;
+	}
+
+	public void setUsed(boolean isUsed) {
+		this.isUsed = isUsed;
+	}
 
 	public String getName() {
 		return name;
